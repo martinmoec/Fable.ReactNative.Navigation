@@ -1,3 +1,4 @@
 .ionide
 bin/
 obj/
+*.nupkg
