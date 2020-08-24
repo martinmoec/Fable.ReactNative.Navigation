@@ -13,5 +13,6 @@ let render =
         ]
     ]
 
+// register our app with the AppRegistry. Alternative to withReactNative when we dont want to include Elmish
 // use the name used for react-native init
 Helpers.registerApp "app name here" render 

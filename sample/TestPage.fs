@@ -6,6 +6,7 @@ module R = Fable.ReactNative.Helpers
 module P = Fable.ReactNative.Props
 open Fable.ReactNative.Props
 
+// expects the render function to be called from the navigation handler with a integer as property
 let view ( navigation : Types.INavigation<int> ) = 
     R.view [
         P.ViewProperties.Style [
@@ -15,6 +16,7 @@ let view ( navigation : Types.INavigation<int> ) =
         ]
     ] [
         
+        // print the passed integer stored in the route-params
         R.text [] ( sprintf "The screen was opened with counter: %i" navigation.route.``params`` )
 
         R.text [] "Open TestPage again with 10"
@@ -23,6 +25,7 @@ let view ( navigation : Types.INavigation<int> ) =
                 P.FlexStyle.Padding( R.dip 4. )
                 P.BorderWidth 2.
             ]
+            // calls helper function to push a new screen of "test" with the value 10
             OnPress ( fun _ -> pushWithData navigation "test" 10 )
         ]
 
@@ -32,6 +35,8 @@ let view ( navigation : Types.INavigation<int> ) =
                 P.FlexStyle.Padding( R.dip 4. )
                 P.BorderWidth 2.
             ]
+
+            // go back to previous screen
             OnPress ( fun _ -> navigation.navigation.goBack () )
         ]
 
@@ -41,6 +46,7 @@ let view ( navigation : Types.INavigation<int> ) =
                 P.FlexStyle.Padding( R.dip 4. )
                 P.BorderWidth 2.
             ]
+            // pops the current screen
             OnPress ( fun _ -> navigation.navigation.pop () )
         ]
 
@@ -50,6 +56,7 @@ let view ( navigation : Types.INavigation<int> ) =
                 P.FlexStyle.Padding( R.dip 4. )
                 P.BorderWidth 2.
             ]
+            // pops all the screens to the top
             OnPress ( fun _ -> navigation.navigation.popToTop () )
         ]
 
@@ -59,6 +66,9 @@ let view ( navigation : Types.INavigation<int> ) =
                 P.FlexStyle.Padding( R.dip 4. )
                 P.BorderWidth 2.
             ]
+
+            // calls helpers function for updating the screen options of the current screen. 
+            // fed a single prop for updating the title
             OnPress ( fun _ -> setOptions navigation [ Props.ScreenOptions.Title "Updated title" ] )
         ]
      

@@ -20,6 +20,8 @@ module R = Fable.ReactNative.Helpers
 module P = Fable.ReactNative.Props
 open Fable.ReactNative.Props
 
+
+// we dont expect the render function to be called from the navigation handler with any properties, so we ignore it
 let private view model dispatch ( navigation : Types.INavigation<_> ) = 
     R.view [
         P.ViewProperties.Style [
@@ -56,13 +58,15 @@ let private view model dispatch ( navigation : Types.INavigation<_> ) =
                 P.FlexStyle.MarginLeft ( R.pct 2. )
                 P.BorderWidth 2.
             ]
+
+            // use helper function to navigate to the "test" screen with the current counter of our model
             OnPress ( fun _ -> navigateWithData navigation "test" model.Counter ) 
         ]
     ]
 
 
 
-
+// craete a simple model-update for handling our state and messages
 let counter ( navigation : Types.INavigation<_> ) = 
     let initialModel = init ()
     Fable.React.FunctionComponent.Of ( fun ( mdl : Model ) -> 
