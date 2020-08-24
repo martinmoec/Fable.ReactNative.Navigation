@@ -1,13 +1,14 @@
 # Fable.ReactNative.Navigation
 
-Provides Fable bindings for the ```stack navigator``` of [React Navigation](https://reactnavigation.org). 
+Provides Fable bindings for the stack navigator of [React Navigation](https://reactnavigation.org). 
 
 View the requirements and read the docs on getting started with React Navigation [here](https://reactnavigation.org/docs/getting-started). 
 
-When building Elmish-applications in React Native for applications larger than the infamous "Counter app", navigating in the native way of iOS and Android quickly becomes wonky. This package lets you make use of the stack navigator of React Navigation, in order to get a native feel and look when navigating in your Fable React Native apps.
+When building Elmish-applications in React Native larger than the infamous "Counter app", navigating in the native way of iOS and Android quickly becomes wonky. This package lets you make use of the stack navigator of React Navigation, in order to get a native feel and look when navigating in your Fable React Native apps.
 
 ## Install
 
+Assuming a similar setup to the one described in [this](https://github.com/martinmoec/fable-react-native-how-to) how-to.
 - Add the ```Fable.ReactNative.Navigation``` Nuget package to your F# project
 
 - Install the required npm-modules
@@ -67,7 +68,7 @@ let render =
 Helpers.registerApp "demo" render
 ```
 
-Here the loginPage expects to receive a navigationObject, where the data payload is an integer. The payload can be accessed through ```navigation.route.params```. 
+Here the ```loginPage``` expects to receive a navigation object, where the data payload is an integer. The payload can be accessed through ```navigation.route.params```. 
 
 The navigation object provides functions for navigating further. For example, you can navigate to the ```home``` page using 
 ```fsharp
@@ -113,4 +114,4 @@ Helpers.registerApp "demo" render
 
 ## Notice
 
-As you might have noticed, the type-safety of F# is not percerved between the data passed with the navigation functiona and the screen-function receiving the data, as it essentially is the navigation handler of React Navigation which will call your screen functions. 
+As you might have noticed, the type-safety of F# is not preserved between the data passed with the navigation function and the screen-function receiving the data, as it essentially is the navigation handler of React Navigation which will call your screen functions. 
