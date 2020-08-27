@@ -7,8 +7,7 @@ open Fable.React
 
 
 module Types = 
-    type INavigatorStatic =
-        interface end
+    type INavigatorStatic = interface end
     and INavigator = INavigatorStatic
     and IScreenStatic = interface end
     and IScreen = IScreenStatic
@@ -21,42 +20,66 @@ module Types =
         static member NavigationContainer with get(): INavigationContainerStatic = jsNative and set(v: INavigationContainerStatic): unit = jsNative
 
     type ICreateStackNavigator =
-        abstract member registerComponent : string -> ( unit -> obj ) -> unit
-        abstract member setRoot : obj -> JS.Promise<obj>
+        abstract member ``registerComponent`` : string    -> ( unit -> obj ) -> unit
+        abstract member ``setRoot`` : obj -> JS.Promise<obj>
 
         abstract member Navigator : ReactElement
 
         abstract member Screen : ReactElement
+    
+    type ICreateBottomTabNavigator =
+        abstract member Navigator : ReactElement
+        abstract member Screen : ReactElement
 
     type INavigationObject =
         {
-            navigate    : string    -> unit
-            goBack      : unit      -> unit
-            push        : string    -> unit
-            pop         : unit      -> unit
-            popToTop    : unit      -> unit
-            setOptions  : obj       -> unit
-            reset       : obj       -> unit
-            setParams   : obj       -> unit
+            ``navigate``    : string    -> unit
+            ``goBack``      : unit      -> unit
+            ``push``        : string    -> unit
+            ``pop``         : unit      -> unit
+            ``popToTop``    : unit      -> unit
+            ``setOptions``  : obj       -> unit
+            ``reset``       : obj       -> unit
+            ``setParams``   : obj       -> unit
         }
 
     // 'a = the type of data expected to be passed with the navigation
     type IRouteObject<'a> = 
         {
-            key         : string
-            name        : string
+            ``key``     : string
+            ``name``    : string
             ``params``  : 'a
         }
     
     type INavigation<'b> =
-        abstract member navigation : INavigationObject
-        abstract member route : IRouteObject<'b>
+        abstract member ``navigation`` : INavigationObject
+        abstract member ``route`` : IRouteObject<'b>
     
     [<Import("createStackNavigator", from="@react-navigation/stack")>]    
     let CreateStackNavigator () : ICreateStackNavigator = jsNative
 
+    [<Import("createBottomTabNavigator", from="@react-navigation/bottom-tabs")>]
+    let CreateBottomTabNavigator () : ICreateBottomTabNavigator = jsNative
+    
+let inline navigateWithData ( navigation : Types.INavigation<_> ) ( endpoint : string ) ( data : 'a ) =
+    navigation.navigation?navigate( endpoint, data )
 
-module Props =
+let inline pushWithData ( navigation : Types.INavigation<_> ) ( endpoint : string ) ( data : 'a ) =
+    navigation.navigation?push( endpoint, data )
+
+let popMultipleScreens ( navigation : Types.INavigation<_> ) ( numScreens : int ) = 
+    navigation.navigation?pop( numScreens )
+
+let inline jumpTo ( navigation : Types.INavigation<_> ) ( endpoint : string ) ( data : 'a ) = 
+    navigation.navigation?jumpTo(endpoint, data);
+
+
+let navigationContainer props children = 
+    ReactBindings.React.createElement( Types.Globals.NavigationContainer, keyValueList CaseRules.LowerFirst props, children )
+
+
+module Stack = 
+
     [<StringEnum>]
     type AnimationType =
         | Push
@@ -69,12 +92,6 @@ module Props =
         | Vertical
         | [<CompiledName("vertical-inverted")>] VerticalInverted
     
-    type Inset = 
-        | Bottom of float 
-        | Left of float 
-        | Right of float
-        | Top of float
-
     type ResponseDistance =
         | Horizontal of float
         | Vertical of float
@@ -138,7 +155,7 @@ module Props =
         static member HeaderTitleContainerStyle ( x : seq<Fable.ReactNative.Props.IStyle> ) = !!("headerTitleContainerStyle", keyValueList CaseRules.LowerFirst x )
         static member HeaderTitleStyle ( x : seq<Fable.ReactNative.Props.IStyle> ) = !!("headerTitleStyle", keyValueList CaseRules.LowerFirst x )
         static member HeaderStyle ( x : seq<Fable.ReactNative.Props.IStyle> ) = !!("headerStyle", keyValueList CaseRules.LowerFirst x )    
-        static member SafeAreaInsets ( x : seq<Inset> ) = !!("safeAreaInsets", keyValueList CaseRules.LowerFirst x )
+        static member SafeAreaInsets ( x : seq<Props.Insets> ) = !!("safeAreaInsets", keyValueList CaseRules.LowerFirst x )
         static member TransitionSpec ( x : seq<Transition> ) = !!("transitionSpec", keyValueList CaseRules.LowerFirst x )
     
     type ScreenProps =
@@ -155,6 +172,7 @@ module Props =
         | Screen
         | None
 
+
     type NavigatorProps = 
         | InitialRouteName          of string      
         | KeyboardHandlingEnabled   of bool
@@ -163,45 +181,98 @@ module Props =
 
         static member ScreenOptions ( x : seq<ScreenOptions> ) = !!("screenOptions", keyValueList CaseRules.LowerFirst x )
 
-let inline navigateWithData ( navigation : Types.INavigation<_> ) ( endpoint : string ) ( data : 'a ) =
-    navigation.navigation?navigate( endpoint, data )
+    let Stack = Types.CreateStackNavigator ()
 
-let inline pushWithData ( navigation : Types.INavigation<_> ) ( endpoint : string ) ( data : 'a ) =
-    navigation.navigation?push( endpoint, data )
+    let navigator ( props : seq<NavigatorProps> ) children = 
+        ReactBindings.React.createElement( Stack.Navigator, keyValueList CaseRules.LowerFirst props, children )
 
-let popMultipleScreens ( navigation : Types.INavigation<_> ) ( numScreens : int ) = 
-    navigation.navigation?pop( numScreens )
+    let screen name ( render : 'a ) ( props : seq<ScreenProps> ) children =
+        let screenProps = 
+            let x = keyValueList CaseRules.LowerFirst props
+            x?name          <- name
+            x?``component`` <- render
+            x
 
-let inline setOptions ( navigation : Types.INavigation<_> ) ( options : seq<Props.ScreenOptions> ) =
-    let x = keyValueList CaseRules.LowerFirst options
-    navigation.navigation.setOptions x
+        ReactBindings.React.createElement( Stack.Screen, screenProps, children )
 
-let navigationContainer props children = 
-    ReactBindings.React.createElement( Types.Globals.NavigationContainer, keyValueList CaseRules.LowerFirst props, children )
-
-let Stack = Types.CreateStackNavigator ()
-
-let navigator ( props : seq<Props.NavigatorProps> ) children = 
-    ReactBindings.React.createElement( Stack.Navigator, keyValueList CaseRules.LowerFirst props, children )
-
-let screen name ( render : 'a ) ( props : seq<Props.ScreenProps> ) children =
-    let screenProps = 
-        let x = keyValueList CaseRules.LowerFirst props
-        x?name          <- name
-        x?``component`` <- render
-        x
-
-    ReactBindings.React.createElement( Stack.Screen, screenProps, children )
+    let inline setOptions ( navigation : Types.INavigation<_> ) ( options : seq<ScreenOptions> ) =
+        let x = keyValueList CaseRules.LowerFirst options
+        navigation.navigation.setOptions x
 
 
 
 
+
+module Tab = 
+
+    [<StringEnum>]
+    type BackBehavior = 
+        | InitialRoute
+        | Order
+        | History
+        | None
+    
+    [<StringEnum>]
+    type LabelPosition = 
+        | [<CompiledName("below-icon")>] BelowIcon
+        | [<CompiledName("beside-icon")>] BesideIcon
+    
+    type TabBarOptions = 
+        | ActiveTintColor       of string
+        | Adaptive              of bool
+        | AllowFontScaling      of bool
+        | InactiveTintColor     of string
+        | KeyboardHidesTabBar   of bool
+        | LabelPosition         of LabelPosition
+        | ShowLabel             of bool
+        
+
+        static member SafeAreaInsets ( x : seq<Props.Insets> ) = !!("safeAreaInsets", keyValueList CaseRules.LowerFirst x )
+        static member Style ( x : seq<Props.IStyle> ) = !!("style", keyValueList CaseRules.LowerFirst x ) 
+        static member TabStyle ( x : seq<Props.IStyle> ) = !!("tabStyle", keyValueList CaseRules.LowerFirst x )
+
+    type NavigatorProps = 
+        | BackBehavior          of BackBehavior
+        | InitialRouteName      of string
+        | Lazy                  of bool
+        | TabBar                of ( obj -> ReactElement )
+
+        static member TabBarOptions ( x : seq<TabBarOptions> ) = !!("tabBarOptions", keyValueList CaseRules.LowerFirst x )
+        //static member ScreenOptions ( x : seq<Props.ScreenOptions> ) = !!("screenOptions", keyValueList CaseRules.LowerFirst x )
+
+    type ScreenOptions = 
+        | TabBarAccessibilityLabel  of string
+        | TabBarBadge               of string
+        | TabBarButton              of ( obj -> ReactElement )
+        | TabBarIcon                of ( obj -> ReactElement )
+        | TabBarLabel               of string
+        | TabBarTestID              of string
+        | TabBarVisisble            of bool
+        | Title                     of string
+        | UnmountOnBlur             of bool
+
+    type ScreenProps = 
+        
+        static member Options ( x : seq<ScreenOptions> ) = !!("options", keyValueList CaseRules.LowerFirst x )
+
+    let Tab = Types.CreateBottomTabNavigator ()
+
+    let navigator ( props : seq<NavigatorProps> ) children = 
+        ReactBindings.React.createElement( Tab.Navigator, keyValueList CaseRules.LowerFirst props, children )
+
+    let screen name ( render : 'a ) ( props : seq<ScreenProps> ) children = 
+        let screenProps =
+            let x = keyValueList CaseRules.LowerFirst props
+            x?name          <- name
+            x?``component`` <- render
+            x
+        ReactBindings.React.createElement( Tab.Screen, screenProps, children )
 
 
 module Helpers = 
     type AppState = {
-        render : unit -> Fable.React.ReactElement
-        setState : AppState -> unit
+        ``render`` : unit -> Fable.React.ReactElement
+        ``setState`` : AppState -> unit
     }
 
     let mutable appState = None
@@ -215,18 +286,18 @@ module Helpers =
                 this.setInitState state
             | _ -> failwith "App-state is not set. Remember to call registerApp."
 
-        override this.componentDidMount() =
+        override this.``componentDidMount``() =
             appState <- Some { appState.Value with setState = fun s -> this.setState(fun _ _ -> s) }
 
-        override this.componentWillUnmount() =
+        override this.``componentWillUnmount``() =
             appState <- Some { appState.Value with setState = ignore; render = this.state.render }
 
-        override this.render () =
+        override this.``render`` () =
             this.state.render()
 
     [<Import("AppRegistry","react-native")>]
     type AppRegistry =
-        static member registerComponent(appKey:string, getComponentFunc:unit->ReactElementType<_>) : unit =
+        static member ``registerComponent``(appKey:string, getComponentFunc:unit->ReactElementType<_>) : unit =
             failwith "JS only"
 
 
