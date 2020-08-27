@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>Fable.ReactNative.Navigation</PackageId>
-    <Version>0.0.3-alpha</Version>
+    <Version>0.0.4-alpha</Version>
     <PackageTags>Fable;react-native;@react-natvigation/native;Fsharp;FSharp Fable ReactNative;</PackageTags>
     <Description>Fable bindings for @react-navigation/native, @react-navigation/stack and @react-navigation/bottom-tabs</Description>
     <PackageProjectUrl>https://github.com/martinmoec/Fable.ReactNative.Navigation</PackageProjectUrl>

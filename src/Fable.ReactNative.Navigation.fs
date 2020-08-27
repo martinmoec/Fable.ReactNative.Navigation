@@ -159,6 +159,7 @@ module Stack =
         static member TransitionSpec ( x : seq<Transition> ) = !!("transitionSpec", keyValueList CaseRules.LowerFirst x )
     
     type ScreenProps =
+        | InitialParams of obj
         static member Options ( x : seq<ScreenOptions> ) = !!("options", keyValueList CaseRules.LowerFirst x )
 
     [<StringEnum>]
@@ -252,7 +253,7 @@ module Tab =
         | UnmountOnBlur             of bool
 
     type ScreenProps = 
-        
+        | InitialParams of obj
         static member Options ( x : seq<ScreenOptions> ) = !!("options", keyValueList CaseRules.LowerFirst x )
 
     let Tab = Types.CreateBottomTabNavigator ()
