@@ -69,7 +69,7 @@ let view ( navigation : Types.INavigation<int> ) =
 
             // calls helpers function for updating the screen options of the current screen. 
             // fed a single prop for updating the title
-            OnPress ( fun _ -> setOptions navigation [ Props.ScreenOptions.Title "Updated title" ] )
+            OnPress ( fun _ -> Stack.setOptions navigation [ Stack.ScreenOptions.Title "Updated title" ] )
         ]
      
     ]
