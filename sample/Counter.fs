@@ -66,7 +66,7 @@ let private view model dispatch ( navigation : Types.INavigation<_> ) =
 
 
 
-// craete a simple model-update for handling our state and messages
+// create a simple model-update for handling our state and messages
 let counter ( navigation : Types.INavigation<_> ) = 
     let initialModel = init ()
     Fable.React.FunctionComponent.Of ( fun ( mdl : Model ) -> 
