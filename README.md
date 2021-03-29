@@ -12,7 +12,7 @@ Assuming a similar setup to the one described in [this](https://github.com/marti
 - Add the ```Fable.ReactNative.Navigation``` Nuget package to your F# project
 
 - Install the required npm-modules
-    * ```@react-navigation/native```, ```@react-navigation/stack```,```@react-navigation/bottom-tabs```, ```react-native-gesture-handler```, ```react-native-reanimated```, ```react-native-safe-area-context```, ```react-native-screens```,  ```@react-native-community/masked-view``` (See the React Navigation docs)
+    * ```@react-navigation/native```, ```@react-navigation/stack```,```@react-navigation/bottom-tabs```, ```@react-navigation/drawer```, ```react-native-gesture-handler```, ```react-native-reanimated```, ```react-native-safe-area-context```, ```react-native-screens```,  ```@react-native-community/masked-view``` (See the React Navigation docs)
 
 ## Register your application
 
@@ -27,13 +27,14 @@ let homePage () : Fable.React.ReactElement =
 let loginPage () : Fable.React.ReactElement =
     ...
 
+let StackNavigator = Stack.CreateStackNavigator()
 let render = 
     navigationContainer [] [
-        Stack.navigator [
+        StackNavigator.Navigator.navigator [
             Stack.NavigatorProps.InitialRouteName "home"
         ] [
-            Stack.screen "home" homePage [] []
-            Stack.screen "login" loginPage [] []
+            StackNavigator.Screen.screen "home" homePage [] []
+            StackNavigator.Screen.screen "login" loginPage [] []
         ]
     ]
 
@@ -55,13 +56,14 @@ open Fable.ReactNative.Navigation.Types
 let loginPage ( navigation : INavigation<int>) = 
     ...
 
+let StackNavigator = Stack.CreateStackNavigator ()
 let render = 
     navigationContainer [] [
-        Stack.navigator [
+        StackNavigator.Navigator.navigator [
             Stack.NavigatorProps.InitialRouteName "home"
         ] [
-            Stack.screen "home" home [] []
-            Stack.screen "login" loginPage [] []
+            StackNavigator.Screen.screen "home" home [] []
+            StackNavigator.Screen.screen "login" loginPage [] []
         ]
     ]
 
@@ -99,13 +101,14 @@ let loginPage ( nav : INavigation<string> ) =
         text [] ( sprintf "Received: %s" nav.route.params )
     ]
 
+let StackNavigator = Stack.CreateStackNavigator ()
 let render = 
     navigationContainer [] [
-        Stack.navigator [
+        StackNavigator.Navigator.navigator [
             Stack.NavigatorProps.InitialRouteName HomeScreenName
         ] [
-            Stack.screen HomeScreenName homePage [] []
-            Stack.screen LoginScreenName loginPage [] []
+            StackNavigator.Screen.screen HomeScreenName homePage [] []
+            StackNavigator.Screen.screen LoginScreenName loginPage [] []
         ]
     ]
 

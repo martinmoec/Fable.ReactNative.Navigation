@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <PackageId>Fable.ReactNative.Navigation</PackageId>
-    <Version>0.0.4-alpha</Version>
+    <Version>0.0.5-alpha</Version>
     <PackageTags>Fable;react-native;@react-natvigation/native;Fsharp;FSharp Fable ReactNative;</PackageTags>
-    <Description>Fable bindings for @react-navigation/native, @react-navigation/stack and @react-navigation/bottom-tabs</Description>
+    <Description>Fable bindings for @react-navigation/native, @react-navigation/stack, @react-navigation/bottom-tabs and @react-navigation/drawer</Description>
     <PackageProjectUrl>https://github.com/martinmoec/Fable.ReactNative.Navigation</PackageProjectUrl>
     <RepositoryUrl>https://github.com/martinmoec/Fable.ReactNative.Navigation</RepositoryUrl>
   </PropertyGroup>
@@ -17,6 +17,7 @@
       <NpmPackage Name="@react-navigation/native" Version="&gt;= 5.7.3" />
       <NpmPackage Name="@react-navigation/stack" Version="&gt;= 5.9.0" />
       <NpmPackage Name="@react-navigation/bottom-tabs" Version="&gt;= 5.8.0" />
+      <NpmPackage Name="@react-navigation/drawer" Version="&gt;= 5.12.0" />
     </NpmDependencies>
   </PropertyGroup>
   <ItemGroup>
